@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+    app:
+        build: 
+            context: ./php/
+            dockerfile: Dockerfile
+        container_name: app-php7.2
+        image: php:7.2
+        volumes: 
+            - ./php:/var/www/html/
+        ports: 
+            - 8000:80
+        depends_on: 
+            - db
+
+    db:
+        container_name: app-db
+        image: mysql:8.0
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        environment: 
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: penduduk
+            MYSQL_USER: devuser
+            MYSQL_PASSWORD: devpass
+    
+    phpmyadmin:
+        container_name: app-pma
+        image: phpmyadmin:latest
+        environment: 
+            PMA_HOST: db
+            PMA_PORT: 3306
+        ports: 
+            - 8001:80
+        depends_on: 
+            - db
